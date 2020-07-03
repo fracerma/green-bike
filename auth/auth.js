@@ -5,7 +5,7 @@ const bcrypt= require("bcryptjs")
 const app= express();
 const Token= require("./model/Token");
 const User = require("./model/User");
-const { registerValidation , loginValidation } = require("../api/model/userValidation");
+const { registerValidation , loginValidation } = require("./validator");
 require("dotenv").config();
 
 //Database connection
@@ -16,7 +16,7 @@ mongoose.connect(process.env.MONGODB_URL,{ useNewUrlParser: true,useUnifiedTopol
 app.use(express.json());
 
 app.post("/register",async (req,res)=>{
-    const error=registerValidation(req.body);
+    const {error}=registerValidation(req.body);
     if(error) return res.status(400).send(error);
     try{
         const emailExists= await User.findOne({email:req.body.email});
@@ -49,7 +49,7 @@ app.delete("/logout",async (req,res)=>{
 
 app.post("/login",async (req,res)=>{
 
-    const error= loginValidation(req.body);
+    const {error}= loginValidation(req.body);
     if(error) return res.status(400).send(error);
     try{
         const user= await User.findOne({email:req.body.email});
@@ -59,7 +59,7 @@ app.post("/login",async (req,res)=>{
         const found=await Token.findOne({userId: user.id});
         if(found) return res.status(403).send({refreshToken: found.refreshToken});
 
-        const accessToken= generateAccessToken({id: user.id, name: user.name, email: user.email});
+        const accessToken= generateAccessToken({id: user.id, name: user.name, email: user.email, role: user.role});
         const refreshToken = jwt.sign({id: user.id},process.env.REFRESH_TOKEN_SECRET);
 
         await (new Token({userId:user.id, refreshToken: refreshToken})).save();
