@@ -4,20 +4,26 @@ const axios = require("axios");
 const Measure =require("../model/Measure")
 
 const MAX_HOURS_DELAY=8;
+const MAX_DISTANCE_MEASURE=300;
 
-let lastMeasure=new Date();
+let lastMeasure=Date.now();
 
 router.get("/",async (req,res)=>{
-    if(!req.query.lat||!req.query.lon) return res.status(400).send("Missing lat ot long params");
-    const radius= req.radius||50; //default meters
-    let now=new Date();
+    req.query.lat=req.query.pos.split(",")[0];
+    req.query.lon=req.query.pos.split(",")[1];
+    if(!req.query.lat||!req.query.lon) return res.status(400).send("Missing lat ot lon params");
+    const radius= req.radius||MAX_DISTANCE_MEASURE; //default meters
+    let now=Date.now();
     let apiMeasure=null;
-    const sensorMeasure = await getSensorMeasures(req.query.lat,req.query.lon,radius);
+    let sensorMeasure=null;
+    //sensorMeasure=await getSensorMeasures(req.query.lat,req.query.lon,radius);
     if(getDifferenceInSeconds(now,lastMeasure)>=1){
+        lastMeasure= now;
         try{
-        apiMeasure= (await axios.get(`https://hackathon.tim.it/airquality/latest?latitude=${req.query.lat}&longitude=${req.query.lon}&apikey=${process.env.AIR_QUAL_KEY}`)).data;
-        const obj={sensorId:"apiTim",lat: req.query.lat,lon: req.query.lon,IQAValue: apiMeasure.IQAValue,pollutants: apiMeasure.pollutants, date: new Date(apiMeasure.timestamp)}
-        const dataExists=await Measure.findOne(obj)
+            apiMeasure= (await axios.get(`https://hackathon.tim.it/airquality/latest?latitude=${req.query.lat}&longitude=${req.query.lon}&apikey=${process.env.AIR_QUAL_KEY}`)).data;
+            //TODO togliere aggiunta al database
+            const obj={sensorId:"5eff60eb95d9f355c8e17832",lat: req.query.lat,lon: req.query.lon,IQAValue: apiMeasure.IQAValue,pollutants: apiMeasure.pollutants, date: new Date(apiMeasure.timestamp)};
+            const dataExists=await Measure.findOne(obj);
         if(!dataExists){
             const newm= new Measure(obj);
             await newm.save();
@@ -26,24 +32,39 @@ router.get("/",async (req,res)=>{
             console.error(err);  
         }
     }
-    lastMeasure= now;
-    res.json({sensorMeasure: sensorMeasure});
+    let returnMeasure=null;
+    if(apiMeasure&&sensorMeasure)
+        returnMeasure=(apiMeasure.date>sensorMeasure.date)?apiMeasure:sensorMeasure;
+    else
+        returnMeasure=(apiMeasure)?apiMeasure:sensorMeasure;
+    
+    res.json(returnMeasure);
 });
 
-router.get("/valid",(req,res)=>{
-
+//TODO remove all
+router.get("/updateDate",(req,res)=>{
+    const measures= Measure.find({});
+    measures.forEach(el=> {
+        el.creationTime=Date.now();
+        el.save()
+    });
 });
 
 async function getSensorMeasures(lat,lon,radius){
     const a= {lat: lat,lon: lon};
-    // if(lastMeasure.setHours(lastMeasure.getHours()+1)<now){
-    //     const sensorMeasure= axios("https://hackathon.tim.it/bcnotarization/data")
-    let mesures= await Measure.find({});
-    mesures=mesures.filter((el)=>{
+    let measures= await Measure.find({});
+    measures=measures.filter((el)=>{
         const b= {lat: el.lat, lon: el.lon};
-        return haversine(a,b)<=radius && getDifferenceInHours(el.date,new Date())<MAX_HOURS_DELAY;
-    })
-    return mesures;
+        return haversine(a,b)<=radius && getDifferenceInHours(Date.now(),el.creationTime)<MAX_HOURS_DELAY;
+    });
+    if(measures.length>0)
+        measures=measures.reduce((prev, current)=> {
+            const prevDist= haversine(a,{lat: prev.lat, lon: prev.lon});
+            const currDist= haversine(a,{lat: current.lat, lon: current.lon});
+            return (prevDist < currDist) ? prev : current
+        });
+    else measures=null;
+    return measures;
 }
 
 
