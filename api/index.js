@@ -11,16 +11,23 @@ const app= express();
 require("dotenv").config();
 
 app.use(express.json());
+app.get("/",(req,res)=>{
+    res.send("ciao");
+})
 app.use(verifyToken);
 
-const userRoute=require("./routes/user");
+const userRoute=require("./routes/user").router;
 const sensorRoute=require("./routes/sensor");
 const airQualRoute=require("./routes/airQuality").router;
 const routeFindRoute=require("./routes/route");
+const journeyRoute=require("./routes/journey");
+const goalRoute=require("./routes/goal");
 app.use("/users",userRoute);
 app.use("/sensor",sensorRoute);
 app.use("/airquality",airQualRoute);
 app.use("/route",routeFindRoute);
+app.use("/journey",journeyRoute);
+app.use("/goal",goalRoute);
 
 async function verifyToken(req,res,next){
     const token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || (req.headers.authorization && req.headers.authorization.split(" ")[1]);

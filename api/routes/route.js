@@ -17,12 +17,16 @@ router.get("/",async (req,res)=>{
             else response=responseWalk;
         }
         else response=responseBike;
+        console.log(response);
         if(response.routes.length>0){
-            //response=response.routes.map(async (route) => 
+            let faster={index:-1,value:Number.MAX_SAFE_INTEGER};
+            let healthier={index:-1,value:Number.MAX_SAFE_INTEGER};
+            let shorter={index:-1,value:Number.MAX_SAFE_INTEGER};
             for(j=0;j<response.routes.length;j++){
                 let route=response.routes[j];
                 let leng=0;
                 let accumulator=0;
+                
                 for(i=0;i<route.legs[0].steps.length;i++){
                     currentValue=route.legs[0].steps[i];
                     const point=(await getBestMeasure(currentValue.end_location.lat,currentValue.end_location.lng));
@@ -34,11 +38,27 @@ router.get("/",async (req,res)=>{
                     accumulator+=value;
                 }
                 route.IQARoute=accumulator/leng;
+                if(route.IQARoute<healthier.value){
+                    healthier.value=route.IQARoute;
+                    healthier.index=j;
+                }
+                if(route.legs[0].distance.value<shorter.value){
+                    shorter.value=route.legs[0].distance.value;
+                    shorter.index=j;
+                }
+                if(route.legs[0].duration.value<faster.value){
+                    faster.value=route.legs[0].duration.value;
+                    faster.index=j;
+                }
                 console.log(route.legs[0].steps.length,leng, route.IQARoute);
                 response.routes[j]=route;
             }
-        };
-        res.json(response);
+            response.healthier=healthier.index;
+            response.faster=faster.index;
+            response.shorter=shorter.index;
+            res.json(response);
+        }else res.sendStatus(404);
+        
     }
     catch(err){
         console.error(err);

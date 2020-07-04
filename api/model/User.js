@@ -21,6 +21,18 @@ const userSchema= new mongoose.Schema({
         type:Number,
         default: 0
     },
+    kmToday:{
+        type:Number,
+        default: 0
+    },
+    kmWeek:{
+        type:Number,
+        default: 0
+    },
+    kmMonth:{
+        type:Number,
+        default: 0
+    },
     role: String,
     date: {
         type: Date,

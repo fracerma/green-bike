@@ -15,4 +15,16 @@ router.get("/:id",async (req,res)=>{
     res.json(user);
 });
 
-module.exports=router;
+
+async function addEcoCredits(userId,kmDone){
+    const user= await User.findById(userId);
+    if(user.role==="premium"){
+        user.ecocredits+=kmDone*ECO_EACH_KM;
+        user.save();
+        return true;
+    }
+    else return false
+}
+
+module.exports.addEcocredits;
+module.exports.router=router;

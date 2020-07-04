@@ -60,7 +60,7 @@ app.post("/login",async (req,res)=>{
         if(found) return res.status(403).send({refreshToken: found.refreshToken});
 
         const accessToken= generateAccessToken({id: user.id, name: user.name, email: user.email, role: user.role});
-        const refreshToken = jwt.sign({id: user.id},process.env.REFRESH_TOKEN_SECRET);
+        const refreshToken = jwt.sign({id: user.id, name: user.name, email: user.email, role: user.role},process.env.REFRESH_TOKEN_SECRET);
 
         await (new Token({userId:user.id, refreshToken: refreshToken})).save();
         res.json({accessToken: accessToken,refreshToken: refreshToken});
@@ -78,7 +78,7 @@ app.post("/token",async (req,res)=>{
         jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRET, (err,user)=>{
             if(err) res.sendStatus(403);
             if(found.userId!==user.id) return res.sendStatus(403);
-            const accessToken= generateAccessToken({id: user.id,name: user.name,email:user.email});
+            const accessToken= generateAccessToken({id: user.id, name: user.name, email: user.email, role: user.role});
             res.json({accessToken: accessToken})
         })
     }catch(error){

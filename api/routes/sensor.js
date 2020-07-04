@@ -1,6 +1,7 @@
 const router=require("express").Router();
 const Sensor=require("../model/Sensor");
 const Measure=require("../model/Measure");
+const addEcocredits=require("./user").addEcocredits;
 
 //TODO validation
 router.post("/",async (req,res)=>{
@@ -30,6 +31,7 @@ router.post("/:sensor",async (req,res)=>{
 
         sensor.lastLat=req.body.lat;
         sensor.lastLon=req.body.lon;
+        //TODO oltre che validare i dati arrivati dal sensore validiamo le posizioni e aggiorniamo l'eco credito dell'utente
         if(sensor.numMeasures%20==0) checkBlockchain();
         sensor.numMeasures+=1;
         await sensor.save();
@@ -41,7 +43,7 @@ router.post("/:sensor",async (req,res)=>{
     }
 })
 
-//TODO
+//TODO aggiungo ecocrediti
 function checkBlockchain(){
 
 }
