@@ -9,36 +9,16 @@ const MAX_DISTANCE_MEASURE=300;
 let lastMeasure=Date.now();
 
 router.get("/",async (req,res)=>{
-    req.query.lat=req.query.pos.split(",")[0];
-    req.query.lon=req.query.pos.split(",")[1];
     if(!req.query.lat||!req.query.lon) return res.status(400).send("Missing lat ot lon params");
-    const radius= req.radius||MAX_DISTANCE_MEASURE; //default meters
-    let now=Date.now();
-    let apiMeasure=null;
-    let sensorMeasure=null;
-    //sensorMeasure=await getSensorMeasures(req.query.lat,req.query.lon,radius);
-    if(getDifferenceInSeconds(now,lastMeasure)>=1){
-        lastMeasure= now;
-        try{
-            apiMeasure= (await axios.get(`https://hackathon.tim.it/airquality/latest?latitude=${req.query.lat}&longitude=${req.query.lon}&apikey=${process.env.AIR_QUAL_KEY}`)).data;
-            //TODO togliere aggiunta al database
-            const obj={sensorId:"5eff60eb95d9f355c8e17832",lat: req.query.lat,lon: req.query.lon,IQAValue: apiMeasure.IQAValue,pollutants: apiMeasure.pollutants, date: new Date(apiMeasure.timestamp)};
-            const dataExists=await Measure.findOne(obj);
-        if(!dataExists){
-            const newm= new Measure(obj);
-            await newm.save();
-        }
-        }catch(err){
-            console.error(err);  
-        }
-    }
-    let returnMeasure=null;
-    if(apiMeasure&&sensorMeasure)
-        returnMeasure=(apiMeasure.date>sensorMeasure.date)?apiMeasure:sensorMeasure;
-    else
-        returnMeasure=(apiMeasure)?apiMeasure:sensorMeasure;
     
-    res.json(returnMeasure);
+    try{
+        res.json(await getBestMeasure(req.query.lat,req.query.lon,req.query.radius));
+    }
+    catch(err){
+        console.error(err);
+        res.sendStatus(400);
+    }
+    
 });
 
 //TODO remove all
@@ -67,6 +47,27 @@ async function getSensorMeasures(lat,lon,radius){
     return measures;
 }
 
+async function getBestMeasure(lat,lon,radiusQuery){
+    const radius= radiusQuery||MAX_DISTANCE_MEASURE; //default meters
+    let now=Date.now();
+    let apiMeasure=null;
+    let sensorMeasure=await getSensorMeasures(lat,lon,radius);
+    if(getDifferenceInSeconds(now,lastMeasure)>2){
+        lastMeasure= now;
+        try{
+            apiMeasure= (await axios.get(`https://hackathon.tim.it/airquality/latest?latitude=${lat}&longitude=${lon}&apikey=${process.env.AIR_QUAL_KEY}`)).data;
+        }catch(err){
+            console.error(err);  
+        }
+    }
+    let returnMeasure=null;
+    if(apiMeasure&&sensorMeasure)
+        returnMeasure=(apiMeasure.date>sensorMeasure.date)?apiMeasure:sensorMeasure;
+    else
+        returnMeasure=(apiMeasure)?apiMeasure:sensorMeasure;
+    return returnMeasure;
+}
+
 
 function getDifferenceInHours(date1, date2) {
     const diffInMs = Math.abs(date2 - date1);
@@ -83,4 +84,5 @@ function getDifferenceInHours(date1, date2) {
     return diffInMs / 1000;
   }
 
-  module.exports=router;
+  module.exports.router=router;
+  module.exports.getBestMeasure=getBestMeasure;

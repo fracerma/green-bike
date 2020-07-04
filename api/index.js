@@ -14,17 +14,19 @@ app.use(express.json());
 app.use(verifyToken);
 
 const userRoute=require("./routes/user");
-sensorRoute=require("./routes/sensor");
-const airQualRoute=require("./routes/airQuality");
+const sensorRoute=require("./routes/sensor");
+const airQualRoute=require("./routes/airQuality").router;
+const routeFindRoute=require("./routes/route");
 app.use("/users",userRoute);
 app.use("/sensor",sensorRoute);
 app.use("/airquality",airQualRoute);
+app.use("/route",routeFindRoute);
 
 async function verifyToken(req,res,next){
     const token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || (req.headers.authorization && req.headers.authorization.split(" ")[1]);
     if(!token) return res.sendStatus(401);
     try{
-        const response=await axios.get("http://localhost:4500/verify?token="+token);
+        const response=await axios.get(`${process.env.BASE_URL}:4500/verify?token=${token}`);
         req.user=response.data;
         next();
     }catch(err){
@@ -34,4 +36,4 @@ async function verifyToken(req,res,next){
 }
 
 const port= process.env.PORT || 4000;
-app.listen(port,()=>console.log("Api is listening on http://localhost:4000"));
+app.listen(port,()=>console.log("Api is listening on "+process.env.BASE_URL+":"+port));
