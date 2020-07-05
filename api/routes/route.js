@@ -72,6 +72,7 @@ function buildUrlMode(mode,origin,destination){
         queryParams: {
             key:process.env.GOOGLE_API_KEY,
             alternatives: true,
+            avoid: "highways",
             mode:mode,
             origin: origin,
             destination: destination

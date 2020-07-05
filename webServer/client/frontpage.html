@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Green Bike</title>
+    <link rel="stylesheet" href="/css/frontpage.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+</head>
+    <body>
+        <div class="login-page">
+            <div class="form">
+            
+              <form class="register-form" action="http://localhost:5000/register" method="post">
+                <img src="/img/logo.jpeg"  width="200px">
+                <input type="text" name="name"placeholder="name"/>
+                <input type="password" name="password" placeholder="password"/>
+                <input type="text" name="email" placeholder="email address"/>
+                <button>create</button>
+                <p class="message">Already registered? <a href="#">Sign In</a></p>
+              </form>
+              <form class="login-form" action="http://localhost:5000/login" method="post">
+                <img src="/img/logo.jpeg" width="200px">
+                <input type="text" name="email" placeholder="email"/>
+                <input type="password" name="password"placeholder="password"/>
+                <button>login</button>
+                <p class="message">Not registered? <a href="#">Create an account</a></p>
+              </form>
+            </div>
+        </div>
+        <script>
+            $('.message a').click(function(){
+                $('form').animate({height: "toggle", opacity: "toggle"}, "slow");
+            });
+        </script>
+</body>
+</html>

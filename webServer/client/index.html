@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+        <link rel="stylesheet" href="css/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+      </head>
+      <body>
+        <div id="app">
+          <v-app>
+              
+          <v-app-bar flat app>
+            <v-app-bar-nav-icon class="grey--text" @click="drawer=!drawer"></v-app-bar-nav-icon>
+            <v-toolbar-title class="green--text">Green Bike</v-toolbar-title>
+
+            <v-spacer></v-spacer>
+          
+          </v-app-bar>
+        <v-navigation-drawer app v-model="drawer">
+          <v-list>
+            <v-list-item
+              v-for="item in items"
+              :key="item.title"
+              link
+              :to="item.link"
+            >
+              <v-list-item-icon>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-icon>
+    
+              <v-list-item-content>
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <template v-slot:append>
+            <div class="pa-2">
+              <v-btn block href="http://localhost:5000/logout">Logout</v-btn>
+            </div>
+          </template>
+          </v-navigation-drawer>
+            <v-main>
+
+                <!-- Provides the application the proper gutter -->
+                <v-container fluid>
+            
+                  <!-- If using vue-router -->
+                  <router-view></router-view>
+                </v-container>
+              </v-main>
+            
+              <v-footer app>
+                <!-- -->
+              </v-footer>
+          </v-app>
+        </div>
+
+        
+        <script src="js/vue/vue-router.min.js"></script>
+        <script src="js/vue/vue-google-maps.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+        <script type="module" src="js/main.js" type="text/javascript"></script>
+      </body>
+      </html>
+</html>

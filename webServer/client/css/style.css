@@ -1,0 +1,26 @@
+.user-progress{
+    width: fit-content;
+    margin:auto;
+}
+.user-progress-group{
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    margin:auto;
+}
+.user-progress-item{
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    align-items: center;
+}
+.introInput{
+    padding:10px;
+    margin:5px;
+    border-radius: 5px;
+    border: 1px solid grey;
+}
+
+.center-div{
+    text-align: center !important;
+}

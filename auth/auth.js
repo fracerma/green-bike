@@ -44,7 +44,7 @@ app.post("/register",async (req,res)=>{
 app.delete("/logout",async (req,res)=>{
     const refreshToken= req.body.token;
     await Token.deleteOne({refreshToken:refreshToken})
-    res.sendStatus(204);
+    res.sendStatus(200);
 });
 
 app.post("/login",async (req,res)=>{
