@@ -10,7 +10,6 @@ function notLogged(req,res,next){
 }
 
 router.use("/",notLogged,async (req,res)=>{
-    console.log(req.session.token);
     axios({
         method: req.method,
         url: process.env.BASE_API_URL+req.url,
@@ -21,10 +20,8 @@ router.use("/",notLogged,async (req,res)=>{
           res.send(resp.data);
       }).catch(async err=>{
           if(err.response.status===401){
-              console.log("unthorized");
               
               req.session.token=await refreshToken(req.session.refToken);
-              console.log(req.session.token);
               
               axios({
                 method: req.method,
