@@ -2,10 +2,10 @@
 Progetto nato durante l'Hackathon Tim Smart Spaces che incentiva il consumer a scegliere la mobilità in bicicletta o monopattino, offrendo la possibilità di individuare e percorrere un percorso bike friendly, dal flusso controllato, dalla qualità dell’aria migliore, con la possibilità di guadagnare ticket per il trasporto pubblico locale. 
 Per il suo funzionamento abbiamo utilizzato le API di TIM e dei suoi partners quali:
 -	Place API Google Maps 
-	Direction API Google Maps
-	Air Quality TIM 
-	Dialog Flow
-	Blockchain Notarization API
+-	Direction API Google Maps
+-	Air Quality TIM 
+-	Dialog Flow
+-	Blockchain Notarization API
 Il tutto in un contesto di Machine learning
 Quest applicazione permette la mobilità quotidiana in sicurezza, incentivando la green mobility, riducendo il rischio di contagio e permettendo una conoscenza capillare della qualità dell’aria e dei percorsi bike friendly delle nostre città.
 Una volta loggati, è necessario che il consumer abiliti il GPS.
