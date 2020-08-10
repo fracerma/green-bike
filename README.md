@@ -1,5 +1,5 @@
 # green-bike
-Progetto nato durante l'Hackathon Tim Smart Spaces che incentiva il consumer a scegliere la mobilità in bicicletta o monopattino, offrendo la possibilità di individuare e percorrere un percorso bike friendly, dal flusso controllato, dalla qualità dell’aria migliore, con la possibilità di guadagnare ticket per il trasporto pubblico locale. 
+Prototipo software per il progetto nato durante l'Hackathon Tim Smart Spaces che incentiva il consumer a scegliere la mobilità in bicicletta o monopattino, offrendo la possibilità di individuare e percorrere un percorso bike friendly, dal flusso controllato, dalla qualità dell’aria migliore, con la possibilità di guadagnare ticket per il trasporto pubblico locale. 
 Per il suo funzionamento abbiamo utilizzato le API di TIM e dei suoi partners quali:
 -	Place API Google Maps 
 -	Direction API Google Maps
