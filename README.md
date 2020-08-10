@@ -6,6 +6,7 @@ Per il suo funzionamento abbiamo utilizzato le API di TIM e dei suoi partners qu
 -	Air Quality TIM 
 -	Dialog Flow
 -	Blockchain Notarization API
+
 Il tutto in un contesto di Machine learning
 Quest applicazione permette la mobilità quotidiana in sicurezza, incentivando la green mobility, riducendo il rischio di contagio e permettendo una conoscenza capillare della qualità dell’aria e dei percorsi bike friendly delle nostre città.
 Una volta loggati, è necessario che il consumer abiliti il GPS.
